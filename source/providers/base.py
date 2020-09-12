@@ -4,7 +4,7 @@ from source.datum import Qualifier, Shard
 from source.order import Order
 
 
-class BaseProvider(Protocol):
+class BaseProvider:
     SUPPORTED_QUALIFIERS: Tuple[Qualifier] = ()
 
     def provide(self, shard: Shard) -> Tuple[Order]:

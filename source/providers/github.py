@@ -23,7 +23,7 @@ class GithubSourceProvider(BaseProvider):
         start, end = self._calculate_pagination(shard.position)
 
         orders = []
-        for page in range(start, end + 1):
+        for page in range(start, end):
             data = query(
                 url,
                 page=page,
@@ -37,7 +37,8 @@ class GithubSourceProvider(BaseProvider):
 
             orders.extend(self.generate_orders(data["items"]))
 
-        return tuple(orders)
+        shard_start, shard_end = shard.position.start, shard.position.stop
+        return tuple(orders)[shard_start - start * 100 : shard_end - end * 100]
 
     def generate_orders(
         self, dataset: List[Dict[str, Any]]
@@ -69,7 +70,6 @@ class GithubSourceProvider(BaseProvider):
             yield Order(
                 data=data,
                 metadata=metadata,
-                protocol=GITProtocol,
             )
 
     def _determine_sorting(self, qualifier: Qualifier) -> str:
@@ -81,7 +81,7 @@ class GithubSourceProvider(BaseProvider):
     def _calculate_pagination(self, position: slice) -> Tuple[int, int]:
         end_page = math.floor(position.stop // 100)
         start_page = math.ceil(position.start // 100)
-        return start_page, end_page
+        return start_page, end_page + 1
 
     def _calculate_popularity(
         self, forks: int, watchers: int, stars: int, issues: int

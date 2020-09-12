@@ -6,5 +6,4 @@ from source.protocols import BaseProtocol
 
 class Order(NamedTuple):
     data: str
-    protocol: BaseProtocol
     metadata: Metadata = None
