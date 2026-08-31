@@ -26,5 +26,4 @@ class BaseProtocol:
         with executor as pool:
             yield pool.map
 
-    def execute(self, orders: Tuple[Order]) -> Tuple[Order]:
-        ...
+    def execute(self, orders: Tuple[Order]) -> Tuple[Order]: ...
